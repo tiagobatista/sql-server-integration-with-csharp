@@ -1,6 +1,6 @@
 public class EFCoreService(AppDbContext context)
 {
-    private readonly AppDbContext Context = context;
+    public readonly AppDbContext Context = context;
 
     private void AddItem(string name, string color)
     {

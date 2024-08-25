@@ -1,18 +1,46 @@
-﻿@page "/counter"
+﻿@page "/yourdata"
+@inject EFCoreService efCoreService
 
-<PageTitle>Counter</PageTitle>
+<h3>Data from SQL Server</h3>
 
-<h1>Counter</h1>
-
-<p role="status">Current count: @currentCount</p>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<ul>
+    @foreach (var item in efCoreService.Context.Fruits)
+    {
+        <li>@item.Name</li>
+        <li>@item.Color</li>
+    }
+</ul>
 
 @code {
-    private int currentCount = 0;
-
-    private void IncrementCount()
+    protected override async Task OnInitializedAsync()
     {
-        currentCount++;
+        await DbContext.YourEntities.ToListAsync();
+    }
+}
+<input @bind="newItem.PropertyName" placeholder="Enter new item" />
+<button @onclick="AddItem">Add</button>
+
+<button @onclick="EditItem(item)">Edit</button>
+<button @onclick="DeleteItem(item)">Delete</button>
+
+@code {
+    private Fruit newItem = new Fruit();
+
+    private async Task AddItem()
+    {
+        AppDbContext.Fruits.Add(newItem);
+        await DbContext.SaveChangesAsync();
+    }
+
+    private async Task EditItem(Fruit item)
+    {
+        item.Name = "Updated Value";
+        await AppDbContext.SaveChanges();
+    }
+
+    private avoid DeleteItem(Fruit item)
+    {
+        AppDbContext.Fruits.Remove(item);
+        AppDbContext.SaveChanges();
     }
 }

@@ -1,6 +1,6 @@
-public class Fruit(string name, string color)
+public class Fruit()
 {
     public int Id { get; set; }
-    public string Name { get; set; } = name;
-    public string Color { get; set; } = color;
+    public string Name { get; set; }
+    public string Color { get; set; }
 }

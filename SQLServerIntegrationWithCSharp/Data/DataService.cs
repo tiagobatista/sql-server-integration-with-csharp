@@ -17,7 +17,12 @@ public class DataService()
                 var name = reader["Name"].ToString();
                 var color = reader["Color"].ToString();
 
-                var fruit = new Fruit(name, color);
+                var fruit = new Fruit
+                {
+                    Name = name,
+                    Color = color
+                };
+
                 allFruits.Add(fruit);
             }
 

@@ -1,0 +1,51 @@
+﻿@page "/yourdata"
+@using Microsoft.EntityFrameworkCore
+@inject EFCoreService efCoreService
+
+<h3>Data from SQL Server</h3>
+
+<ul>
+    @foreach (var fruit in efCoreService.Context.Fruits)
+    {
+        <li>@fruit.Name</li>
+        <li>@fruit.Color</li>
+        <!-- Move the buttons inside the loop to access the correct 'fruit' context -->
+        <button @onclick="() => EditFruit(fruit)">Edit</button>
+        <button @onclick="() => DeleteFruit(fruit)">Delete</button>
+    }
+</ul>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await efCoreService.Context.Fruits.ToListAsync();
+    }
+}
+
+<!-- Inputs for adding a new fruit -->
+<input @bind="newFruit.Name" placeholder="Enter fruit name" />
+<input @bind="newFruit.Color" placeholder="Enter fruit color" />
+<button @onclick="AddFruit">Add</button>
+
+@code {
+    private Fruit newFruit = new Fruit();
+
+    private async Task AddFruit()
+    {
+        efCoreService.Context.Fruits.Add(newFruit);
+        await efCoreService.Context.SaveChangesAsync();
+        newFruit = new Fruit(); // Clear the input fields after adding
+    }
+
+    private async Task EditFruit(Fruit fruit)
+    {
+        fruit.Name = "Updated Value"; // Modify as needed
+        await efCoreService.Context.SaveChangesAsync();
+    }
+
+    private async Task DeleteFruit(Fruit fruit)
+    {
+        efCoreService.Context.Fruits.Remove(fruit);
+        await efCoreService.Context.SaveChangesAsync();
+    }
+}

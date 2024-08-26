@@ -2,26 +2,35 @@ public class EFCoreService(AppDbContext context)
 {
     public readonly AppDbContext Context = context;
 
-    private void AddItem(string name, string color)
+    public void AddFruit(string name, string color)
     {
-        Context.Fruits.Add(new Fruit(name, color));
+        var fruit = new Fruit
+        {
+            Name = name,
+            Color = color
+        };
+
+        Context.Fruits.Add(fruit);
         Context.SaveChangesAsync();
     }
 
-    private void EditItem(string name, string color, int id)
+    public void EditFruit(string name, string color, int id)
     {
-        var updatedFruit = new Fruit(name, color)
+        var updatedFruit = new Fruit
         {
+            Name = name,
+            Color = color,
             Id = id
         };
+
 
         Context.Fruits.Update(updatedFruit);
         Context.SaveChanges();
     }
 
-    private void DeleteItem(string name, string color, int id)
+    public void DeleteFruit(string name, string color, int id)
     {
-        var toDeleteFruit = new Fruit(name, color)
+        var toDeleteFruit = new Fruit
         {
             Id = id
         };

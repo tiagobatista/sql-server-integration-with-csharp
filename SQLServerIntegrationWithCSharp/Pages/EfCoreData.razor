@@ -1,24 +1,28 @@
-﻿@page "/yourdata"
+﻿@page "/fruits"
 @using Microsoft.EntityFrameworkCore
-@inject EFCoreService efCoreService
+@inject AppDbContext context
 
 <h3>Data from SQL Server</h3>
 
 <ul>
-    @foreach (var fruit in efCoreService.Context.Fruits)
+    @foreach (var fruit in fruits)
     {
+
+        <li>@fruit.Id</li>
         <li>@fruit.Name</li>
         <li>@fruit.Color</li>
         <!-- Move the buttons inside the loop to access the correct 'fruit' context -->
-        <button @onclick="() => EditFruit(fruit)">Edit</button>
+        <button @onclick="() => EditFruit(newFruit.Name, newFruit.Color, fruit.Id)">Edit</button>
         <button @onclick="() => DeleteFruit(fruit)">Delete</button>
     }
 </ul>
 
 @code {
+    private List<Fruit> fruits = new List<Fruit>();
+
     protected override async Task OnInitializedAsync()
     {
-        await efCoreService.Context.Fruits.ToListAsync();
+        fruits = await context.Fruits.ToListAsync();
     }
 }
 
@@ -32,20 +36,36 @@
 
     private async Task AddFruit()
     {
-        efCoreService.Context.Fruits.Add(newFruit);
-        await efCoreService.Context.SaveChangesAsync();
+        context.Fruits.Add(newFruit);
+        await context.SaveChangesAsync();
         newFruit = new Fruit(); // Clear the input fields after adding
+        // Optionally refresh the fruits list after editing
+        fruits = await context.Fruits.ToListAsync();
     }
 
-    private async Task EditFruit(Fruit fruit)
+    private async Task EditFruit(string name, string color, int id)
     {
-        fruit.Name = "Updated Value"; // Modify as needed
-        await efCoreService.Context.SaveChangesAsync();
+        // Retrieve the fruit from the database
+        var fruit = await context.Fruits.FirstOrDefaultAsync(f => f.Id == id);
+        if (fruit != null)
+        {
+            // Update the properties
+            fruit.Name = name;
+            fruit.Color = color;
+
+            // Save the changes
+            await context.SaveChangesAsync();
+
+            // Optionally refresh the fruits list after editing
+            fruits = await context.Fruits.ToListAsync();
+        }
     }
 
     private async Task DeleteFruit(Fruit fruit)
     {
-        efCoreService.Context.Fruits.Remove(fruit);
-        await efCoreService.Context.SaveChangesAsync();
+        context.Fruits.Remove(fruit);
+        await context.SaveChangesAsync();
+        // Optionally refresh the fruits list after editing
+        fruits = await context.Fruits.ToListAsync();
     }
 }

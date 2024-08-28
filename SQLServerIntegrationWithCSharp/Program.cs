@@ -9,7 +9,7 @@ builder.Services.AddServerSideBlazor();
 
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer("Server=localhost;Database=master;User Id=sa;Password=14610429Fcp.;Encrypt=True;TrustServerCertificate=True"));
+    options.UseSqlServer("Server=localhost;Database=master;User Id=sa;Password=YourStrong!Passw0rd;Encrypt=True;TrustServerCertificate=True"));
 
 var app = builder.Build();
 
